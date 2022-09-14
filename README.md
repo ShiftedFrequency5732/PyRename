@@ -19,4 +19,4 @@ You should also create an environment variable for this script, and use it outsi
 
 ### Disclaimer
 I am not responsible, for any damage that happens to your files/directories, while using this script.\
-It is recommended to try this out on something not important first, in order understand how it works.\
+It is recommended to try this out on something not important first, in order understand how it works.
