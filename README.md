@@ -17,6 +17,9 @@ You should also create an environment variable for this script, and use it outsi
 `pyrename.py -q` Run script in quiet mode, you won't get any output/confirmation promts.\
 `pyrename.py --quiet` Same as the command above.
 
+### Example
+![example](https://github.com/ShiftedFrequency5732/PyRename/blob/master/example.gif)
+
 ### Disclaimer
 I am not responsible, for any damage that happens to your files/directories, while using this script.\
 It is recommended to try this out on something not important first, in order understand how it works.
