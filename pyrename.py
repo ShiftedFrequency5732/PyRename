@@ -42,7 +42,7 @@ def rename(path: str, quiet: bool):
 
 
     # Create a temp file, write names of directories/files to it, launch text editor to edit it, read new file names if file still exists, delete temporary file.
-    with open(temp_file_name, 'w') as temp_file:
+    with open(temp_file_name, 'w', encoding="UTF-8") as temp_file:
         print(*content, file=temp_file, sep='\n')
     
     os.system(f"{EDITOR} {temp_file_name}")
@@ -51,7 +51,7 @@ def rename(path: str, quiet: bool):
         if not quiet: print("The temporary file, that holds the file names of all the content of current directory has been deleted. Try again.")
         return
 
-    with open(temp_file_name, 'r') as temp_file:
+    with open(temp_file_name, 'r', encoding="UTF-8") as temp_file:
         new_content = [x.removesuffix('\n') for x in temp_file.readlines()]
 
     os.remove(temp_file_name)
