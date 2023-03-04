@@ -22,15 +22,14 @@ def random_string(character_set: str, length: int, exclude: list[str]=None):
 def valid_file_name(file_name: str):
     # Go through each character in bad character list, if it is in the file name, return False, if none of them are in it return True.
     bad_characters = r"\/:*?<>|" if sys.platform == "win32" else "\0/"
-    for c in bad_characters:
-        if c in file_name: return False
-    return True
+    return not(any(c in bad_characters for c in file_name))
 
 
 def rename(path: str, quiet: bool):
     if not os.path.isdir(path):
         # If passed path isn't a directory inform the user if quiet mode is off, exit program after.
-        if not quiet: print("You have specified invalid path. Try again.")
+        if not quiet:
+            print("You have specified invalid path. Try again.")
         return 
 
     # Get list of files/directories for the passed path.
@@ -48,7 +47,8 @@ def rename(path: str, quiet: bool):
     os.system(f"{EDITOR} {temp_file_name}")
 
     if not os.path.exists(temp_file_name):
-        if not quiet: print("The temporary file, that holds the file names of all the content of current directory has been deleted. Try again.")
+        if not quiet: 
+            print("The temporary file, that holds the file names of all the content of current directory has been deleted. Try again.")
         return
 
     with open(temp_file_name, 'r', encoding="UTF-8") as temp_file:
@@ -82,7 +82,7 @@ def rename(path: str, quiet: bool):
     mid_changes = {}
     for old_name, new_name in zip(content, new_content):
         # Go through each pair of old and new name, create intermediate name before making the final change, in case some file names got swapped.
-        os.rename(old_name, mid_name := random_string(available_characters, length=max(len(file_name) for file_name in content + new_content), exclude=content + new_content))
+        os.rename(old_name, mid_name := random_string(available_characters, length=max(len(file_name) for file_name in content + new_content), exclude = content + new_content + list(mid_changes.values())))
         mid_changes[mid_name] = new_name
 
     for mid_name, new_name in mid_changes.items():
