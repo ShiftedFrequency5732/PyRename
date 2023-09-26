@@ -11,7 +11,7 @@ from pprint import pprint
 EDITOR = "nvim"
 
 
-def random_string(character_set: str, length: int, exclude: list[str]=None):
+def random_string(character_set: str, length: int, exclude: list[str] = None):
     while True:
         # Generate random string that isn't in the exclusion list of the specified length with the specific character set.
         rng_str = "".join(random.choice(character_set) for _ in range(length))
@@ -30,7 +30,7 @@ def rename(path: str, quiet: bool):
         # If passed path isn't a directory inform the user if the quiet mode is off, exit the program regardless of that.
         if not quiet:
             print("You have specified invalid path. Try again.")
-        return 
+        return
 
     # Get the list of files/directories for the passed path.
     os.chdir(path)
@@ -43,13 +43,13 @@ def rename(path: str, quiet: bool):
     # Create a temp file, write names of directories/files to it.
     with open(temp_file_name, 'w', encoding="UTF-8") as temp_file:
         print(*content, file=temp_file, sep='\n')
-    
+
     # Open the text editor on that file to edit it.
     os.system(f"{EDITOR} {temp_file_name}")
 
     # If the file has been deleted exit the program, if the quiet mode is not turned on, inform the user of his mistake.
     if not os.path.exists(temp_file_name):
-        if not quiet: 
+        if not quiet:
             print("The temporary file, that holds the file names of all the content of the current directory has been deleted. Try again.")
         return
 
@@ -63,31 +63,33 @@ def rename(path: str, quiet: bool):
     # Check if the new file/directory names are valid, if there are duplicates, if some got deleted, etc.
     if len(content) > len(new_content):
         if not quiet:
-             print("Some file names have been deleted, to delete files do that manually. Try again.")
+            print("Some file names have been deleted, to delete files do that manually. Try again.")
         return
     elif len(content) < len(new_content):
         if not quiet:
-             print("There are some new file names, to create new files do that manually. Try again.")
+            print("There are some new file names, to create new files do that manually. Try again.")
         return
     elif len(content) != len(set(new_content)):
         if not quiet:
-             print("There are some duplicate file names, each file must have a unique file name. Try again.")
+            print("There are some duplicate file names, each file must have a unique file name. Try again.")
         return
     elif not all(valid_file_name(file_name) for file_name in new_content):
         if not quiet:
-             print("There are some file names, that cannot be used as file name. Try again.")
+            print("There are some file names, that cannot be used as file name. Try again.")
         return
 
     if not quiet:
         # If program isn't in quiet mode, print new changes, ask user if he accepts them, if not, exit program.
         pprint(dict(zip(content, new_content)))
         if input("Do you accept these new changes? (y/n): ").strip().lower() not in ('y', 'yes'):
-             return
-    
+            return
+
+    # Dictionary in which we will store the the intermediate names.
     mid_changes = {}
+
     for old_name, new_name in zip(content, new_content):
         # Go through each pair of old and new name, create an intermediate name before making the final change, in case some file names got swapped, this will solve that problem.
-        os.rename(old_name, mid_name := random_string(available_characters, length=max(len(file_name) for file_name in content + new_content), exclude = content + new_content + list(mid_changes.values())))
+        os.rename(old_name, mid_name := random_string(available_characters, length=max(len(file_name) for file_name in content + new_content), exclude=content + new_content + list(mid_changes.values())))
         mid_changes[mid_name] = new_name
 
     for mid_name, new_name in mid_changes.items():
